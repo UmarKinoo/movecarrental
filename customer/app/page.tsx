@@ -1,110 +1,350 @@
 import Link from 'next/link'
-import { BadgeCheck, CalendarCheck, CarFront, MapPinned, Plane, ShieldCheck } from 'lucide-react'
+import {
+  ArrowUpRight,
+  CalendarCheck,
+  Gauge,
+  KeyRound,
+  MapPinned,
+  Plane,
+  ShieldCheck,
+  Users,
+  Zap,
+} from 'lucide-react'
 import { SearchPanel } from '@/components/forms/search-panel'
+import { MoveIcon } from '@/components/brand/move-mark'
 
-const heroImage = 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1800&q=85'
+const heroImage =
+  'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1800&q=85'
 
-const popularCars = ['Compact automatic', 'Family SUV', 'Convertible', '7-seater van']
+const popularCars = [
+  { name: 'Compact Auto', tag: 'CITY', icon: Zap },
+  { name: 'Family SUV', tag: 'TRIPS', icon: Users },
+  { name: 'Convertible', tag: 'COAST', icon: Gauge },
+  { name: '7-Seater Van', tag: 'CREW', icon: KeyRound },
+] as const
+
+const marqueeWords = [
+  'AIRPORT PICKUP',
+  '24/7 SUPPORT',
+  'CLEAR PRICING',
+  'BOOK IN 60S',
+  'NO HIDDEN FEES',
+  'INSURED',
+] as const
 
 export default function HomePage() {
   return (
-    <div>
-      <section className="relative min-h-[calc(100svh-4rem)] overflow-hidden">
-        <img src={heroImage} alt="Premium rental car on a coastal road" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/35 to-black/10" />
-        <div className="relative mx-auto flex min-h-[calc(100svh-4rem)] max-w-6xl flex-col justify-end px-4 pb-8 pt-24">
-          <div className="max-w-3xl text-white">
-            <p className="text-sm font-semibold uppercase tracking-normal text-white/80">Airport, hotel, and island delivery</p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-6xl">Move Car Rental</h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-white/85">
-              A clean tourist-friendly booking flow for reliable cars, clear prices, and quick pickup.
-            </p>
+    <div className="bg-white">
+      {/* ───────── HERO ───────── */}
+      <section className="relative overflow-hidden bg-white">
+        <div className="grid-lines pointer-events-none absolute inset-0 opacity-40" aria-hidden />
+        <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-12 md:px-8 md:pb-24 md:pt-20">
+          <div className="grid items-end gap-10 lg:grid-cols-[1.15fr_1fr]">
+            <div>
+              <p className="eyebrow-lime">Introducing — MOVE</p>
+              <h1 className="display mt-6 text-[16vw] text-ink md:text-[10rem] xl:text-[12rem]">
+                Drive
+                <br />
+                <span className="relative inline-block">
+                  any
+                  <span className="absolute -bottom-2 left-0 right-0 h-2 bg-lime md:-bottom-3 md:h-3" />
+                </span>
+                where.
+              </h1>
+              <p className="mt-8 max-w-md text-base leading-relaxed text-ink/70 md:text-lg">
+                Book a car in sixty seconds. Pick up the keys.
+                Hit the road.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link href="/cars" className="btn-primary px-6">
+                  Find a car
+                  <ArrowUpRight size={16} strokeWidth={2.5} />
+                </Link>
+                <Link href="/locations" className="btn-ghost px-6">
+                  See the map
+                </Link>
+              </div>
+            </div>
+
+            {/* Hero image card */}
+            <div className="relative">
+              <div className="absolute -left-3 -top-3 z-0 h-full w-full bg-lime md:-left-5 md:-top-5" aria-hidden />
+              <div className="relative aspect-[4/5] overflow-hidden border border-ink bg-ink">
+                <img
+                  src={heroImage}
+                  alt="Car on a coastal road"
+                  className="h-full w-full object-cover opacity-95"
+                />
+                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-gradient-to-t from-ink via-ink/70 to-transparent p-5 text-white">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-lime">
+                      Fleet · 2025
+                    </p>
+                    <p className="mt-1 font-display text-xl font-black uppercase tracking-tightest">
+                      Built for the road
+                    </p>
+                  </div>
+                  <ArrowUpRight size={28} strokeWidth={2} className="text-lime" />
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="mt-8 max-w-5xl">
+
+          {/* Search panel */}
+          <div className="mt-12 md:mt-20">
+            <p className="eyebrow mb-3">01 — Search</p>
             <SearchPanel />
           </div>
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-4 px-4 py-16 md:grid-cols-3">
-        {[
-          { title: 'Simple bookings', body: 'Search dates, choose a vehicle, and reserve in a few taps.', Icon: CalendarCheck },
-          { title: 'Tourist support', body: 'Pickup at airports, hotels, villas, and agreed meeting points.', Icon: Plane },
-          { title: 'Trusted fleet', body: 'Company-owned cars managed from the BookCars admin engine.', Icon: ShieldCheck },
-        ].map(({ title, body, Icon }) => (
-          <div key={title} className="rounded-lg border border-neutral-200 bg-white p-5">
-            <Icon className="text-brand-600" size={26} />
-            <h2 className="mt-5 text-lg font-semibold">{title}</h2>
-            <p className="mt-2 text-sm leading-6 text-neutral-600">{body}</p>
-          </div>
-        ))}
+      {/* ───────── MARQUEE STRIP ───────── */}
+      <section className="border-y border-ink bg-lime py-3 overflow-hidden">
+        <div className="flex animate-marquee gap-12 whitespace-nowrap font-display text-xl font-black uppercase tracking-tightest text-ink">
+          {[...marqueeWords, ...marqueeWords, ...marqueeWords].map((word, i) => (
+            <span key={i} className="flex items-center gap-12">
+              {word}
+              <MoveIcon className="h-5 w-auto" />
+            </span>
+          ))}
+        </div>
       </section>
 
-      <section className="bg-white py-16">
-        <div className="mx-auto max-w-6xl px-4">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+      {/* ───────── 3 PILLARS ───────── */}
+      <section className="bg-white py-20 md:py-28">
+        <div className="mx-auto max-w-7xl px-4 md:px-8">
+          <div className="grid gap-10 md:grid-cols-[1fr_2fr] md:items-end">
             <div>
-              <p className="text-sm font-semibold uppercase text-brand-600">Popular choices</p>
-              <h2 className="mt-2 text-3xl font-semibold text-ink">Cars tourists ask for most</h2>
+              <p className="eyebrow-lime">Why MOVE</p>
+              <h2 className="display mt-4 text-5xl text-ink md:text-7xl">
+                Less friction.
+                <br />
+                More road.
+              </h2>
             </div>
-            <Link href="/cars" className="text-sm font-semibold text-brand-700">Browse cars</Link>
+            <p className="text-base leading-relaxed text-ink/70 md:text-lg">
+              We strip out the paperwork, the surprises, and the queues. You get a clean
+              flow, a real car, and a team you can reach when it matters.
+            </p>
           </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-4">
-            {popularCars.map((name) => (
-              <div key={name} className="rounded-lg border border-neutral-200 bg-paper p-5">
-                <CarFront size={26} />
-                <h3 className="mt-5 font-semibold">{name}</h3>
-                <p className="mt-2 text-sm text-neutral-600">Availability and exact rates come from BookCars.</p>
+
+          <div className="mt-14 grid gap-px bg-ink/10 md:grid-cols-3">
+            {[
+              {
+                num: '01',
+                title: 'Book in 60s',
+                body: 'Search dates and pickup, choose your car, confirm. That is it.',
+                Icon: CalendarCheck,
+              },
+              {
+                num: '02',
+                title: 'Anywhere pickup',
+                body: 'Airports, hotels, villas, agreed meeting points. Tell us where.',
+                Icon: Plane,
+              },
+              {
+                num: '03',
+                title: 'Trusted fleet',
+                body: 'Company-owned cars, serviced and insured. No third-party lottery.',
+                Icon: ShieldCheck,
+              },
+            ].map(({ num, title, body, Icon }) => (
+              <div
+                key={num}
+                className="group relative bg-white p-7 transition hover:bg-ink"
+              >
+                <div className="flex items-start justify-between">
+                  <span className="font-mono text-xs uppercase tracking-[0.2em] text-ink/50 group-hover:text-lime">
+                    {num}
+                  </span>
+                  <Icon size={28} strokeWidth={1.5} className="text-ink group-hover:text-lime" />
+                </div>
+                <h3 className="mt-12 font-display text-3xl font-black uppercase tracking-tightest text-ink group-hover:text-white">
+                  {title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink/70 group-hover:text-white/70">
+                  {body}
+                </p>
+                <ArrowUpRight
+                  size={20}
+                  strokeWidth={2.5}
+                  className="absolute bottom-7 right-7 text-ink/0 transition group-hover:text-lime"
+                />
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-16 md:grid-cols-[0.85fr_1.15fr]">
-        <div>
-          <p className="text-sm font-semibold uppercase text-brand-600">How it works</p>
-          <h2 className="mt-2 text-3xl font-semibold text-ink">Three steps, no maze</h2>
-        </div>
-        <div className="grid gap-4">
-          {['Search your pickup and drop-off dates', 'Choose the vehicle that fits your trip', 'Reserve now and pay at the counter'].map((step, index) => (
-            <div key={step} className="flex gap-4 rounded-lg border border-neutral-200 bg-white p-4">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white">{index + 1}</span>
-              <p className="pt-2 font-medium">{step}</p>
+      {/* ───────── POPULAR CARS ───────── */}
+      <section className="bg-bone py-20 md:py-28">
+        <div className="mx-auto max-w-7xl px-4 md:px-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="eyebrow-lime">Most asked</p>
+              <h2 className="display mt-4 text-5xl text-ink md:text-7xl">
+                Pick a ride.
+              </h2>
             </div>
-          ))}
+            <Link
+              href="/cars"
+              className="group inline-flex items-center gap-2 self-start font-display text-sm font-bold uppercase tracking-[0.1em] text-ink"
+            >
+              Browse all cars
+              <span className="lime-bar transition-all group-hover:w-16" />
+              <ArrowUpRight size={16} strokeWidth={2.5} />
+            </Link>
+          </div>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {popularCars.map(({ name, tag, icon: Icon }) => (
+              <Link
+                key={name}
+                href="/cars"
+                className="group relative flex aspect-square flex-col justify-between border border-ink/10 bg-white p-6 transition hover:border-ink hover:bg-ink"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="chip-lime">{tag}</span>
+                  <Icon size={24} strokeWidth={1.5} className="text-ink/60 group-hover:text-lime" />
+                </div>
+                <div>
+                  <h3 className="font-display text-2xl font-black uppercase leading-none tracking-tightest text-ink group-hover:text-white">
+                    {name}
+                  </h3>
+                  <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-ink/50 group-hover:text-lime">
+                    From €29 / day
+                  </p>
+                </div>
+                <ArrowUpRight
+                  size={18}
+                  strokeWidth={2.5}
+                  className="absolute right-6 top-1/2 -translate-y-1/2 text-ink/0 transition group-hover:translate-x-1 group-hover:text-lime"
+                />
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="bg-ink py-16 text-white">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 md:grid-cols-2">
-          <div>
-            <MapPinned size={30} />
-            <h2 className="mt-5 text-3xl font-semibold">Airport and hotel delivery</h2>
-            <p className="mt-4 leading-7 text-white/75">
-              Add your flight number or accommodation details during booking so the team can coordinate collection.
-            </p>
+      {/* ───────── HOW IT WORKS ───────── */}
+      <section className="bg-white py-20 md:py-28">
+        <div className="mx-auto max-w-7xl px-4 md:px-8">
+          <div className="grid gap-10 md:grid-cols-[1fr_1.4fr]">
+            <div>
+              <p className="eyebrow-lime">Three steps</p>
+              <h2 className="display mt-4 text-5xl text-ink md:text-7xl">
+                No maze.
+              </h2>
+              <div className="mt-6 inline-block diagonal-stripe h-2 w-40" />
+            </div>
+            <ol className="flex flex-col">
+              {[
+                'Search your pickup, drop-off, and dates',
+                'Choose the vehicle that fits your trip',
+                'Confirm — pay online or at the counter',
+              ].map((step, index) => (
+                <li
+                  key={step}
+                  className="group flex items-center justify-between gap-6 border-b border-ink/10 py-6 transition hover:pl-2"
+                >
+                  <div className="flex items-baseline gap-6">
+                    <span className="font-mono text-xs uppercase tracking-[0.18em] text-ink/40">
+                      0{index + 1}
+                    </span>
+                    <span className="font-display text-2xl font-black uppercase leading-tight tracking-tightest text-ink md:text-3xl">
+                      {step}
+                    </span>
+                  </div>
+                  <ArrowUpRight
+                    size={22}
+                    strokeWidth={2.5}
+                    className="shrink-0 text-ink/30 transition group-hover:text-lime"
+                  />
+                </li>
+              ))}
+            </ol>
           </div>
-          <div className="grid gap-3">
-            {['Can I pay later?', 'Can I change my pickup point?', 'Do I need a deposit?'].map((question) => (
-              <details key={question} className="rounded-lg border border-white/15 p-4">
-                <summary className="cursor-pointer font-semibold">{question}</summary>
-                <p className="mt-3 text-sm leading-6 text-white/70">
-                  The MVP supports pay-at-counter first. Deposit and full online payments are planned in the payment phase.
-                </p>
+        </div>
+      </section>
+
+      {/* ───────── DELIVERY + FAQ (DARK) ───────── */}
+      <section className="relative overflow-hidden bg-ink py-20 text-white md:py-28">
+        <div className="absolute -right-20 -top-10 hidden md:block" aria-hidden>
+          <MoveIcon className="h-96 w-auto text-white/[0.04]" />
+        </div>
+        <div className="relative mx-auto grid max-w-7xl gap-12 px-4 md:grid-cols-2 md:px-8">
+          <div>
+            <p className="eyebrow text-lime/80 before:bg-lime">Delivery</p>
+            <h2 className="display mt-4 text-5xl md:text-6xl">
+              Airport &<br />
+              hotel pickup.
+            </h2>
+            <p className="mt-6 max-w-md leading-relaxed text-white/70">
+              Drop your flight number or accommodation in the booking form — our
+              team coordinates the handoff so the keys are waiting.
+            </p>
+            <Link
+              href="/locations"
+              className="mt-8 inline-flex items-center gap-2 border-b border-lime pb-1 font-display text-sm font-bold uppercase tracking-[0.1em] text-lime hover:gap-3"
+            >
+              <MapPinned size={16} />
+              View locations
+              <ArrowUpRight size={14} strokeWidth={2.5} />
+            </Link>
+          </div>
+          <div className="flex flex-col">
+            <p className="eyebrow text-white/50 mb-4">FAQ</p>
+            {[
+              {
+                q: 'Can I pay later?',
+                a: 'Yes — pay-at-counter is supported on most cars. Online payment via Stripe and PayPal is also available.',
+              },
+              {
+                q: 'Can I change my pickup point?',
+                a: 'Update it any time before pickup from your account. Surcharges may apply for off-station drops.',
+              },
+              {
+                q: 'Do I need a deposit?',
+                a: 'A pre-authorisation may be held depending on the car class and insurance package selected.',
+              },
+            ].map(({ q, a }) => (
+              <details
+                key={q}
+                className="group border-b border-white/10 py-5 [&_summary::-webkit-details-marker]:hidden"
+              >
+                <summary className="flex cursor-pointer items-center justify-between gap-4 font-display text-lg font-bold uppercase tracking-[0.02em]">
+                  {q}
+                  <span className="font-mono text-xs text-lime transition group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 max-w-md text-sm leading-relaxed text-white/65">{a}</p>
               </details>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-16 md:flex-row md:items-center md:justify-between">
-        <div>
-          <BadgeCheck className="text-brand-600" size={28} />
-          <h2 className="mt-4 text-3xl font-semibold">Ready to move?</h2>
-          <p className="mt-2 text-neutral-600">Start with your pickup date and location.</p>
+      {/* ───────── BIG CTA ───────── */}
+      <section className="relative overflow-hidden bg-lime">
+        <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 md:py-32">
+          <p className="eyebrow text-ink/60 before:bg-ink">Ready to roll</p>
+          <h2 className="display mt-4 text-[18vw] leading-[0.9] text-ink md:text-[14rem]">
+            Move it.
+          </h2>
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            <Link
+              href="/cars"
+              className="btn-primary h-14 px-7 text-[14px] shadow-[6px_6px_0_0_#0E1A14]"
+            >
+              Book a car
+              <ArrowUpRight size={18} strokeWidth={2.5} />
+            </Link>
+            <Link href="/contact" className="btn-ghost h-14 px-7 text-[14px]">
+              Talk to us
+            </Link>
+          </div>
         </div>
-        <Link href="/" className="rounded-md bg-ink px-6 py-3 text-center text-sm font-semibold text-white">Search cars</Link>
       </section>
     </div>
   )

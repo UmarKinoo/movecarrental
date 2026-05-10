@@ -33,6 +33,7 @@ import { strings as commonStrings } from '@/lang/common'
 import { strings } from '@/lang/cars'
 import * as helper from '@/utils/helper'
 import * as CarService from '@/services/CarService'
+import { carCdnUrl } from '@/utils/cdnImages'
 import Pager from '@/components/Pager'
 import Progress from '@/components/Progress'
 import SupplierBadge from '@/components/SupplierBadge'
@@ -406,7 +407,7 @@ const CarList = ({
               return (
                 <article key={car._id}>
                   <div className="car">
-                    <img src={bookcarsHelper.joinURL(env.CDN_CARS, car.image)} alt={car.name} className="car-img" />
+                    <img src={carCdnUrl(env.CDN_CARS, car.image)} alt={car.name} className="car-img" />
                     <div className="car-footer">
                       <div className="car-footer-row1">
                         <div className="rating">

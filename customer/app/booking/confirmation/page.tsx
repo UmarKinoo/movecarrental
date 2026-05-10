@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { CheckCircle2 } from 'lucide-react'
+import { ArrowUpRight, Check } from 'lucide-react'
 
 type ConfirmationPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>
@@ -10,17 +10,46 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
   const id = Array.isArray(params.id) ? params.id[0] : params.id
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-      <div className="rounded-lg border border-neutral-200 bg-white p-8 shadow-soft">
-        <CheckCircle2 className="mx-auto text-emerald-600" size={44} />
-        <h1 className="mt-5 text-3xl font-semibold">Booking request received</h1>
-        {id && <p className="mt-3 text-sm font-medium text-neutral-600">Reference: {id}</p>}
-        <p className="mt-4 leading-7 text-neutral-600">
-          We sent the booking to BookCars. The rental team can manage it from the admin panel and follow up with the customer.
+    <div className="bg-white">
+      <div className="mx-auto flex min-h-[70vh] max-w-3xl flex-col justify-center px-4 py-16 md:px-8">
+        <p className="eyebrow-lime">Confirmed</p>
+        <h1 className="display mt-4 text-6xl text-ink md:text-8xl">
+          You&apos;re
+          <br />
+          <span className="relative inline-block">
+            on the road.
+            <span className="absolute -bottom-2 left-0 right-0 h-2 bg-lime md:h-3" />
+          </span>
+        </h1>
+        <p className="mt-8 max-w-xl leading-relaxed text-ink/70">
+          We sent the booking to BookCars. The team will follow up with pickup
+          details. Save your reference and bring your documents.
         </p>
-        <Link href="/" className="mt-6 inline-flex rounded-md bg-ink px-6 py-3 text-sm font-semibold text-white">
-          Back home
-        </Link>
+
+        {id ? (
+          <div className="mt-10 inline-flex w-fit items-center gap-3 border-2 border-ink bg-lime px-5 py-3">
+            <span className="flex h-7 w-7 items-center justify-center bg-ink">
+              <Check size={16} strokeWidth={3} className="text-lime" />
+            </span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/70">
+              Reference
+            </span>
+            <span className="font-mono text-sm font-bold text-ink">{id}</span>
+          </div>
+        ) : null}
+
+        <div className="mt-12 flex flex-wrap items-center gap-3">
+          <Link
+            href="/account/bookings"
+            className="btn-primary px-6"
+          >
+            View my bookings
+            <ArrowUpRight size={16} strokeWidth={2.5} />
+          </Link>
+          <Link href="/" className="btn-ghost px-6">
+            Back home
+          </Link>
+        </div>
       </div>
     </div>
   )

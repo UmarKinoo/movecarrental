@@ -18,6 +18,7 @@ import {
 import * as bookcarsTypes from ':bookcars-types'
 import * as bookcarsHelper from ':bookcars-helper'
 import env from '@/config/env.config'
+import { carCdnUrl } from '@/utils/cdnImages'
 
 import '@/assets/css/multiple-select.css'
 
@@ -263,7 +264,7 @@ const MultipleSelect = ({
                       <>
                         <InputAdornment position="start">
                           <img
-                            src={bookcarsHelper.joinURL(env.CDN_CARS, option.image)}
+                            src={carCdnUrl(env.CDN_CARS, option.image)}
                             alt={option.name}
                             style={{
                               height: env.SELECTED_CAR_OPTION_IMAGE_HEIGHT,
@@ -353,7 +354,7 @@ const MultipleSelect = ({
               <li {..._props} key={option._id} className={`${props.className} ms-option`}>
                 <span className="option-image car-ia">
                   <img
-                    src={bookcarsHelper.joinURL(env.CDN_CARS, option.image)}
+                    src={carCdnUrl(env.CDN_CARS, option.image)}
                     alt={option.name}
                     style={{
                       height: env.CAR_OPTION_IMAGE_HEIGHT,

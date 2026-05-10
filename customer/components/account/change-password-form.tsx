@@ -1,0 +1,77 @@
+'use client'
+
+import { FormEvent, useState } from 'react'
+
+export function ChangePasswordForm() {
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setMessage('')
+    setError('')
+    setSubmitting(true)
+    const formData = new FormData(event.currentTarget)
+    const currentPassword = String(formData.get('currentPassword') || '')
+    const newPassword = String(formData.get('newPassword') || '')
+    const confirm = String(formData.get('confirm') || '')
+
+    if (newPassword !== confirm) {
+      setError('New passwords do not match.')
+      setSubmitting(false)
+      return
+    }
+
+    try {
+      const response = await fetch('/api/account/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      })
+      const data = await response.json()
+      if (!response.ok) {
+        setError(data.message || 'Could not change password.')
+        return
+      }
+      setMessage('Password updated.')
+      ;(event.target as HTMLFormElement).reset()
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="grid gap-4">
+      <label className="field">
+        <span className="field-label">Current password</span>
+        <input className="field-control" name="currentPassword" type="password" required autoComplete="current-password" />
+      </label>
+      <label className="field">
+        <span className="field-label">New password</span>
+        <input className="field-control" name="newPassword" type="password" required autoComplete="new-password" />
+      </label>
+      <label className="field">
+        <span className="field-label">Confirm new password</span>
+        <input className="field-control" name="confirm" type="password" required autoComplete="new-password" />
+      </label>
+      <button
+        type="submit"
+        disabled={submitting}
+        className="btn-lime mt-2 h-12 shadow-[4px_4px_0_0_#0E1A14] disabled:shadow-none"
+      >
+        {submitting ? 'Saving…' : 'Update password'}
+      </button>
+      {message ? (
+        <p className="border-l-4 border-lime bg-lime/15 p-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink">
+          ✓ {message}
+        </p>
+      ) : null}
+      {error ? (
+        <p className="border-l-4 border-red-600 bg-red-50 p-3 font-mono text-[11px] uppercase tracking-[0.14em] text-red-700">
+          ! {error}
+        </p>
+      ) : null}
+    </form>
+  )
+}

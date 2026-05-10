@@ -4,8 +4,9 @@
 
 :root {
   color-scheme: light;
-  --background: #f7f4ef;
-  --foreground: #151515;
+  --background: #ffffff;
+  --foreground: #0E1A14;
+  --accent: #DDFF00;
 }
 
 * {
@@ -14,13 +15,16 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-grotesk), system-ui, sans-serif;
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -35,18 +39,107 @@ button {
   font: inherit;
 }
 
-.field {
-  @apply flex min-w-0 flex-col gap-2;
+/* Selection: lime on ink */
+::selection {
+  background: #DDFF00;
+  color: #0E1A14;
 }
 
-.field-label {
-  @apply text-xs font-semibold uppercase tracking-normal text-neutral-600;
+/* ───────────────── KINETIC TYPOGRAPHY ───────────────── */
+
+@layer components {
+  .display {
+    @apply font-display font-black uppercase tracking-tightest leading-[0.92];
+  }
+  .eyebrow {
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-ink/60;
+  }
+  .eyebrow-lime {
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-ink before:mr-2 before:inline-block before:h-[6px] before:w-[6px] before:bg-lime before:align-middle;
+  }
+
+  /* ───────────────── FORMS ───────────────── */
+
+  .field {
+    @apply flex min-w-0 flex-col gap-2;
+  }
+
+  .field-label {
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-ink/70;
+  }
+
+  .field-control {
+    @apply h-12 w-full rounded-sm border border-ink/15 bg-white px-3 text-[15px] text-ink outline-none transition placeholder:text-ink/35 focus:border-ink focus:ring-2 focus:ring-lime/60;
+  }
+
+  .field-area {
+    @apply min-h-28 w-full rounded-sm border border-ink/15 bg-white px-3 py-3 text-[15px] text-ink outline-none transition placeholder:text-ink/35 focus:border-ink focus:ring-2 focus:ring-lime/60;
+  }
+
+  /* ───────────────── BUTTONS ───────────────── */
+
+  .btn {
+    @apply inline-flex h-12 items-center justify-center gap-2 rounded-sm px-5 font-display text-sm font-bold uppercase tracking-[0.06em] transition disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-ink text-white hover:bg-lime hover:text-ink active:translate-y-px;
+  }
+  .btn-lime {
+    @apply btn bg-lime text-ink hover:bg-ink hover:text-lime active:translate-y-px;
+  }
+  .btn-ghost {
+    @apply btn border border-ink/20 bg-transparent text-ink hover:border-ink hover:bg-ink hover:text-white;
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700;
+  }
+
+  /* ───────────────── SURFACES ───────────────── */
+
+  .card {
+    @apply rounded-md border border-ink/10 bg-white transition;
+  }
+  .card-hover {
+    @apply hover:-translate-y-0.5 hover:border-ink hover:shadow-soft;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-sm border border-ink/15 bg-white px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-ink/80;
+  }
+  .chip-lime {
+    @apply inline-flex items-center gap-1.5 rounded-sm bg-lime px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-ink;
+  }
+  .chip-ink {
+    @apply inline-flex items-center gap-1.5 rounded-sm bg-ink px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-white;
+  }
+
+  /* ───────────────── DECOR ───────────────── */
+
+  .lime-bar {
+    @apply inline-block h-1 w-10 bg-lime;
+  }
+  .diagonal-stripe {
+    background-image: repeating-linear-gradient(
+      135deg,
+      #DDFF00 0 14px,
+      transparent 14px 28px
+    );
+  }
+  .grid-lines {
+    background-image:
+      linear-gradient(to right, rgba(14, 26, 20, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(14, 26, 20, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
 }
 
-.field-control {
-  @apply h-12 w-full rounded-md border border-neutral-300 bg-white px-3 text-sm text-neutral-950 outline-none transition focus:border-brand-600 focus:ring-4 focus:ring-brand-100;
-}
-
-.field-area {
-  @apply min-h-24 w-full rounded-md border border-neutral-300 bg-white px-3 py-3 text-sm text-neutral-950 outline-none transition focus:border-brand-600 focus:ring-4 focus:ring-brand-100;
+/* Reduce motion respect */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

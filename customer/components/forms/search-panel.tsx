@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { CalendarClock, MapPin, Search } from 'lucide-react'
+import { ArrowRight, CalendarClock, MapPin } from 'lucide-react'
 import type { Location } from '@/lib/types/bookcars'
 
 type LocationsResponse = {
@@ -47,7 +47,9 @@ async function readLocationsResponse(response: Response): Promise<LocationsRespo
   }
 }
 
-export function SearchPanel() {
+type Variant = 'light' | 'dark'
+
+export function SearchPanel({ variant = 'light' }: { variant?: Variant } = {}) {
   const router = useRouter()
   const initialDates = useMemo(defaultDates, [])
   const [locations, setLocations] = useState<Location[]>([])
@@ -117,15 +119,35 @@ export function SearchPanel() {
     router.push(`/cars?${params.toString()}`)
   }
 
+  const isDark = variant === 'dark'
+
   return (
-    <form onSubmit={onSubmit} className="grid gap-3 rounded-lg bg-white p-3 shadow-soft md:grid-cols-[1fr_1fr_1fr_auto]">
+    <form
+      onSubmit={onSubmit}
+      className={[
+        'relative grid gap-3 border p-4 md:grid-cols-[1fr_1fr_1fr_auto] md:gap-4 md:p-5',
+        isDark
+          ? 'border-white/10 bg-white/[0.04] text-white shadow-[0_18px_55px_rgba(0,0,0,0.35)] backdrop-blur'
+          : 'border-ink bg-white shadow-[6px_6px_0_0_#0E1A14]',
+      ].join(' ')}
+    >
       <label className="field">
-        <span className="field-label">
-          <MapPin className="mr-1 inline" size={14} />
+        <span
+          className={[
+            'field-label flex items-center gap-1.5',
+            isDark ? 'text-white/70' : '',
+          ].join(' ')}
+        >
+          <MapPin size={12} strokeWidth={2.5} />
           Pickup
         </span>
         <select
-          className="field-control"
+          className={[
+            'field-control',
+            isDark
+              ? 'border-white/20 bg-white/[0.06] text-white focus:border-lime focus:ring-lime/40'
+              : '',
+          ].join(' ')}
           value={pickupLocation}
           disabled={loadingLocations}
           onChange={(event) => {
@@ -136,7 +158,7 @@ export function SearchPanel() {
           }}
         >
           {locations.map((location) => (
-            <option key={location._id} value={location._id}>
+            <option key={location._id} value={location._id} className="text-ink">
               {location.name || location._id}
             </option>
           ))}
@@ -145,40 +167,109 @@ export function SearchPanel() {
       </label>
 
       <label className="field">
-        <span className="field-label">
-          <CalendarClock className="mr-1 inline" size={14} />
-          Pickup date
+        <span
+          className={[
+            'field-label flex items-center gap-1.5',
+            isDark ? 'text-white/70' : '',
+          ].join(' ')}
+        >
+          <CalendarClock size={12} strokeWidth={2.5} />
+          Pickup
         </span>
-        <input className="field-control" type="datetime-local" value={from} onChange={(event) => setFrom(event.target.value)} />
+        <input
+          className={[
+            'field-control',
+            isDark
+              ? 'border-white/20 bg-white/[0.06] text-white focus:border-lime focus:ring-lime/40 [color-scheme:dark]'
+              : '',
+          ].join(' ')}
+          type="datetime-local"
+          value={from}
+          onChange={(event) => setFrom(event.target.value)}
+        />
       </label>
 
       <label className="field">
-        <span className="field-label">Drop-off date</span>
-        <input className="field-control" type="datetime-local" value={to} onChange={(event) => setTo(event.target.value)} />
+        <span
+          className={[
+            'field-label',
+            isDark ? 'text-white/70' : '',
+          ].join(' ')}
+        >
+          Drop-off
+        </span>
+        <input
+          className={[
+            'field-control',
+            isDark
+              ? 'border-white/20 bg-white/[0.06] text-white focus:border-lime focus:ring-lime/40 [color-scheme:dark]'
+              : '',
+          ].join(' ')}
+          type="datetime-local"
+          value={to}
+          onChange={(event) => setTo(event.target.value)}
+        />
       </label>
 
       <button
-        className="mt-0 flex h-12 items-center justify-center gap-2 rounded-md bg-ink px-5 text-sm font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300 md:mt-6"
+        className="btn-lime mt-0 h-12 w-full md:mt-[26px] md:w-auto md:px-6"
         type="submit"
         disabled={loadingLocations || !pickupLocation}
       >
-        <Search size={18} />
         Search
+        <ArrowRight size={16} strokeWidth={2.5} />
       </button>
 
-      {locationError && <p className="text-sm text-red-700 md:col-span-4">{locationError}</p>}
+      {locationError && (
+        <p
+          className={[
+            'font-mono text-xs uppercase tracking-[0.14em] md:col-span-4',
+            isDark ? 'text-red-300' : 'text-red-700',
+          ].join(' ')}
+        >
+          ! {locationError}
+        </p>
+      )}
 
-      <label className="flex items-center gap-2 text-sm text-neutral-700 md:col-span-4">
-        <input type="checkbox" checked={sameLocation} onChange={(event) => setSameLocation(event.target.checked)} />
-        Return to the same location
+      <label
+        className={[
+          'flex items-center gap-2 text-xs md:col-span-4',
+          isDark ? 'text-white/70' : 'text-ink/70',
+        ].join(' ')}
+      >
+        <input
+          type="checkbox"
+          className="h-4 w-4 accent-lime"
+          checked={sameLocation}
+          onChange={(event) => setSameLocation(event.target.checked)}
+        />
+        <span className="font-mono uppercase tracking-[0.14em]">
+          Return to the same location
+        </span>
       </label>
 
       {!sameLocation && (
-        <label className="field md:col-span-2">
-          <span className="field-label">Drop-off location</span>
-          <select className="field-control" value={dropOffLocation} onChange={(event) => setDropOffLocation(event.target.value)}>
+        <label className="field md:col-span-4">
+          <span
+            className={[
+              'field-label',
+              isDark ? 'text-white/70' : '',
+            ].join(' ')}
+          >
+            Drop-off location
+          </span>
+          <select
+            className={[
+              'field-control',
+              isDark
+                ? 'border-white/20 bg-white/[0.06] text-white focus:border-lime focus:ring-lime/40'
+                : '',
+            ].join(' ')}
+            value={dropOffLocation}
+            onChange={(event) => setDropOffLocation(event.target.value)}
+          >
             {locations.map((location) => (
-              <option key={location._id} value={location._id}>
+              <option key={location._id} value={location._id} className="text-ink">
                 {location.name || location._id}
               </option>
             ))}
