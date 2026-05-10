@@ -24,6 +24,13 @@ services:
     depends_on:
       - mongo
 
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: always
+    ports:
+      - 8026:8025
+      - 1026:1025
+
   bc-dev-backend:
     build:
       context: .
@@ -34,6 +41,7 @@ services:
       - 4002:4002
     depends_on:
       - mongo
+      - mailpit
     volumes:
       - cdn:/var/www/cdn/bookcars
       - ./backend:/bookcars/backend

@@ -193,7 +193,7 @@ export async function checkoutBooking(input: BookingCheckoutInput) {
         dropOffLocation: input.dropOffLocation,
         from: input.from,
         to: input.to,
-        status: 'pending',
+        status: 'reserved',
         cancellation: false,
         amendments: false,
         theftProtection: false,

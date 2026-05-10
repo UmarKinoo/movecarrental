@@ -10,4 +10,24 @@ Custom Next.js customer-facing app for the BookCars backend.
 4. Run `npm install`.
 5. Run `npm run dev`.
 
+## Local BookCars stack
+
+For local booking tests, copy `backend/.env.docker.example` to `backend/.env.docker`, then set:
+
+```env
+BC_FRONTEND_HOST=http://localhost:3000/
+BC_SMTP_HOST=mailpit
+BC_SMTP_PORT=1025
+BC_SMTP_USER=none
+BC_SMTP_PASS=none
+```
+
+Start the backend dependencies with:
+
+```bash
+docker compose -f docker-compose.dev.yml up -d mongo mailpit bc-dev-backend
+```
+
+Mailpit captures checkout emails at `http://localhost:8026`.
+
 The first implementation slice supports the mobile-first customer flow foundation, BookCars API wrappers, car search/detail pages, authentication routes, and pay-at-counter booking plumbing. Stripe/PayPal checkout is intentionally isolated for a later payment phase.

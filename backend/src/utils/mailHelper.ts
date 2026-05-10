@@ -39,13 +39,16 @@ const createTransporter = async (): Promise<nodemailer.Transporter> => {
         host: env.SMTP_HOST,
         port: env.SMTP_PORT,
         secure: env.SMTP_PORT === 465, // true for 465 (Implicit TLS), false for other ports (STARTTLS)
-        auth: {
-          user: env.SMTP_USER,
-          pass: env.SMTP_PASS,
-        },
         pool: true, 
         maxConnections: 5, // Max simultaneous connections to the server
         maxMessages: 100, // Max messages to send per connection
+      }
+
+      if (env.SMTP_USER !== 'none' && env.SMTP_PASS !== 'none') {
+        transporterOptions.auth = {
+          user: env.SMTP_USER,
+          pass: env.SMTP_PASS,
+        }
       }
     }
 
