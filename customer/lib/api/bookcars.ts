@@ -37,12 +37,18 @@ async function bookCarsRequest<T>(path: string, options: RequestOptions = {}): P
     headers.set('x-access-token', options.token)
   }
 
-  const response = await fetch(`${bookCarsConfig.apiUrl}${path}`, {
-    method: options.method || 'GET',
-    headers,
-    body: options.body === undefined ? undefined : JSON.stringify(options.body),
-    cache: 'no-store',
-  })
+  let response: Response
+
+  try {
+    response = await fetch(`${bookCarsConfig.apiUrl}${path}`, {
+      method: options.method || 'GET',
+      headers,
+      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      cache: 'no-store',
+    })
+  } catch {
+    throw new BookCarsApiError('BookCars backend is not reachable.', 503)
+  }
 
   if (response.status === 204) {
     return null

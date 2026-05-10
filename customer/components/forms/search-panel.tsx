@@ -5,6 +5,11 @@ import { useRouter } from 'next/navigation'
 import { CalendarClock, MapPin, Search } from 'lucide-react'
 import type { Location } from '@/lib/types/bookcars'
 
+type LocationsResponse = {
+  items?: Location[]
+  error?: string
+}
+
 function toDateTimeLocal(date: Date) {
   const offset = date.getTimezoneOffset()
   const local = new Date(date.getTime() - offset * 60 * 1000)
@@ -22,6 +27,26 @@ function defaultDates() {
   return { from: toDateTimeLocal(from), to: toDateTimeLocal(to) }
 }
 
+async function readLocationsResponse(response: Response): Promise<LocationsResponse> {
+  const body = await response.text()
+
+  if (!body) {
+    return {
+      items: [],
+      error: response.ok ? undefined : 'Locations are temporarily unavailable.',
+    }
+  }
+
+  try {
+    return JSON.parse(body) as LocationsResponse
+  } catch {
+    return {
+      items: [],
+      error: 'Locations are temporarily unavailable.',
+    }
+  }
+}
+
 export function SearchPanel() {
   const router = useRouter()
   const initialDates = useMemo(defaultDates, [])
@@ -32,22 +57,47 @@ export function SearchPanel() {
   const [from, setFrom] = useState(initialDates.from)
   const [to, setTo] = useState(initialDates.to)
   const [loadingLocations, setLoadingLocations] = useState(true)
+  const [locationError, setLocationError] = useState('')
 
   useEffect(() => {
+    let active = true
+
     const loadLocations = async () => {
       try {
         const response = await fetch('/api/locations', { cache: 'no-store' })
-        const data = await response.json()
-        setLocations(data.items || [])
-        const firstLocation = data.items?.[0]?._id || ''
+        const data = await readLocationsResponse(response)
+        const items = data.items || []
+        const firstLocation = items[0]?._id || ''
+
+        if (!active) {
+          return
+        }
+
+        setLocations(items)
         setPickupLocation(firstLocation)
         setDropOffLocation(firstLocation)
+        setLocationError(response.ok ? '' : data.error || 'Locations are temporarily unavailable.')
+      } catch {
+        if (!active) {
+          return
+        }
+
+        setLocations([])
+        setPickupLocation('')
+        setDropOffLocation('')
+        setLocationError('Locations are temporarily unavailable.')
       } finally {
-        setLoadingLocations(false)
+        if (active) {
+          setLoadingLocations(false)
+        }
       }
     }
 
     loadLocations()
+
+    return () => {
+      active = false
+    }
   }, [])
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -90,6 +140,7 @@ export function SearchPanel() {
               {location.name || location._id}
             </option>
           ))}
+          {!locations.length && <option value="">No locations loaded</option>}
         </select>
       </label>
 
@@ -106,10 +157,16 @@ export function SearchPanel() {
         <input className="field-control" type="datetime-local" value={to} onChange={(event) => setTo(event.target.value)} />
       </label>
 
-      <button className="mt-0 flex h-12 items-center justify-center gap-2 rounded-md bg-ink px-5 text-sm font-semibold text-white transition hover:bg-neutral-800 md:mt-6" type="submit">
+      <button
+        className="mt-0 flex h-12 items-center justify-center gap-2 rounded-md bg-ink px-5 text-sm font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300 md:mt-6"
+        type="submit"
+        disabled={loadingLocations || !pickupLocation}
+      >
         <Search size={18} />
         Search
       </button>
+
+      {locationError && <p className="text-sm text-red-700 md:col-span-4">{locationError}</p>}
 
       <label className="flex items-center gap-2 text-sm text-neutral-700 md:col-span-4">
         <input type="checkbox" checked={sameLocation} onChange={(event) => setSameLocation(event.target.checked)} />
@@ -125,6 +182,7 @@ export function SearchPanel() {
                 {location.name || location._id}
               </option>
             ))}
+            {!locations.length && <option value="">No locations loaded</option>}
           </select>
         </label>
       )}
