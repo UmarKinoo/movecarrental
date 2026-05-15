@@ -2,6 +2,8 @@ import React from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 
+import { colors } from '@/theme/colors'
+
 interface RadioButtonProps {
   checked: boolean
   style?: object
@@ -25,7 +27,7 @@ const RadioButton = ({
 
   return (
     <View style={{ ...styles.container, ...style }}>
-      <MaterialIcons name={checked ? 'radio-button-on' : 'radio-button-off'} size={18} color="#f37022" onPress={onPress} />
+      <MaterialIcons name={checked ? 'radio-button-on' : 'radio-button-off'} size={18} color={colors.lime} onPress={onPress} />
       <Pressable style={styles.pressable} onPress={onPress}>
         <Text style={{ ...styles.text, ...textStyle }}>{label}</Text>
       </Pressable>

@@ -16,10 +16,13 @@ For local booking tests, copy `backend/.env.docker.example` to `backend/.env.doc
 
 ```env
 BC_FRONTEND_HOST=http://localhost:3000/
-BC_SMTP_HOST=mailpit
-BC_SMTP_PORT=1025
-BC_SMTP_USER=none
-BC_SMTP_PASS=none
+# Easiest local dev: skip SMTP entirely (registration works without Mailpit)
+BC_SMTP_DISABLED=true
+# Or use Mailpit instead:
+# BC_SMTP_HOST=127.0.0.1
+# BC_SMTP_PORT=1026
+# BC_SMTP_USER=none
+# BC_SMTP_PASS=none
 ```
 
 Start the backend dependencies with:

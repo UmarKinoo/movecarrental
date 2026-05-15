@@ -24,6 +24,7 @@ import CarMultimediaFilter from '@/components/CarMultimediaFilter'
 import CarSeatsFilter from '@/components/CarSeatsFilter'
 import FuelPolicyFilter from '@/components/FuelPolicyFilter'
 import CarSpecsFilter from '@/components/CarSpecsFilter'
+import { colors } from '@/theme/colors'
 import SearchFormFilter from '@/components/SearchFormFilter'
 import CarRatingFilter from '@/components/CarRatingFilter'
 import Indicator from '@/components/Indicator'
@@ -318,9 +319,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f37022',
-    // borderColor: '#d9d8d9',
-    borderColor: '#f37022',
+    backgroundColor: colors.lime,
+    borderColor: colors.lime,
     borderRadius: 4,
     borderWidth: 1,
     marginRight: 7,
@@ -329,11 +329,11 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   shwoFiltersIcon: {
-    color: '#fff',
+    color: colors.ink,
     marginRight: 5,
   },
   shwoFiltersTxt: {
-    color: '#fff',
+    color: colors.ink,
   }
 })
 

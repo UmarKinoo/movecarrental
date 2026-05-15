@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Image, NativeModules, Pressable, StyleSheet, Text, TurboModuleRegistry, View } from 'react-native'
 import { useRouter } from 'expo-router'
-import { GoogleSignin, isErrorWithCode, statusCodes } from '@react-native-google-signin/google-signin'
-import * as AppleAuthentication from 'expo-apple-authentication'
-import { AccessToken, GraphRequest, GraphRequestManager, LoginManager, Profile } from 'react-native-fbsdk-next'
+import { isAvailableAsync as isAppleAuthAvailableAsync, signInAsync as appleSignInAsync } from 'expo-apple-authentication/build/AppleAuthentication'
+import { AppleAuthenticationScope } from 'expo-apple-authentication/build/AppleAuthentication.types'
 import { Paragraph, Dialog, Portal, Button as NativeButton } from 'react-native-paper'
 import * as bookcarsTypes from ':bookcars-types'
 
@@ -12,12 +11,35 @@ import * as helper from '@/utils/helper'
 import * as UserService from '@/services/UserService'
 import * as env from '@/config/env.config'
 
+/** Expo Go and other binaries without this native module must never import `@react-native-google-signin/google-signin`. */
+const HAS_NATIVE_GOOGLE_SIGNIN = TurboModuleRegistry.get('RNGoogleSignin') != null
+const HAS_NATIVE_FACEBOOK = NativeModules.FBLoginManager != null
 
-GoogleSignin.configure({
-  webClientId: env.GOOGLE_WEB_CLIENT_ID,
-  offlineAccess: true,
-  scopes: ['profile', 'email'],
-})
+type GoogleSignInLib = typeof import('@react-native-google-signin/google-signin')
+let googleSignInLib: GoogleSignInLib | null = null
+
+function loadGoogleSignIn(): GoogleSignInLib | null {
+  if (!HAS_NATIVE_GOOGLE_SIGNIN) {
+    return null
+  }
+  if (!googleSignInLib) {
+    googleSignInLib = require('@react-native-google-signin/google-signin') as GoogleSignInLib
+  }
+  return googleSignInLib
+}
+
+type FacebookSdkLib = typeof import('react-native-fbsdk-next')
+let facebookSdkLib: FacebookSdkLib | null = null
+
+function loadFacebookSdk(): FacebookSdkLib | null {
+  if (!HAS_NATIVE_FACEBOOK) {
+    return null
+  }
+  if (!facebookSdkLib) {
+    facebookSdkLib = require('react-native-fbsdk-next') as FacebookSdkLib
+  }
+  return facebookSdkLib
+}
 
 interface SocialLoginProps {
   stayConnected?: boolean
@@ -36,6 +58,30 @@ const SocialLogin = (
 ) => {
   const router = useRouter()
   const [openErrorDialog, setOpenErrorDialog] = useState(false)
+
+  useEffect(() => {
+    const lib = loadGoogleSignIn()
+    if (!lib) {
+      return
+    }
+    lib.GoogleSignin.configure({
+      webClientId: env.GOOGLE_WEB_CLIENT_ID,
+      offlineAccess: true,
+      scopes: ['profile', 'email'],
+    })
+  }, [])
+
+  const [appleAuthSupported, setAppleAuthSupported] = useState(false)
+  useEffect(() => {
+    if (!helper.ios()) {
+      return
+    }
+    void isAppleAuthAvailableAsync().then(setAppleAuthSupported)
+  }, [])
+
+  const showGoogle = HAS_NATIVE_GOOGLE_SIGNIN
+  const showFacebook = HAS_NATIVE_FACEBOOK
+  const showApple = helper.ios() && appleAuthSupported
 
   const longinError = () => {
     setOpenErrorDialog(true)
@@ -105,6 +151,10 @@ const SocialLogin = (
     return email
   }
 
+  if (!showGoogle && !showFacebook && !showApple) {
+    return null
+  }
+
   return (
     <View style={styles.view}>
       <View style={styles.or}>
@@ -115,80 +165,87 @@ const SocialLogin = (
 
       <View style={styles.buttons}>
 
-        {/* GOOGLE */}
-        <Pressable
-          onPress={async () => {
-            try {
-              await GoogleSignin.hasPlayServices()
-
-              // Force account picker
-              await GoogleSignin.signOut()
-
-              const userInfo = await GoogleSignin.signIn()
-
-              const user = userInfo.data?.user
-              const idToken = userInfo.data?.idToken
-
-              if (!user || !idToken) {
-                // user probably cancelled the login flow
-                console.log('Google login aborted before token received')
+        {/* GOOGLE — native module missing in Expo Go */}
+        {showGoogle && (
+          <Pressable
+            onPress={async () => {
+              const lib = loadGoogleSignIn()
+              if (!lib) {
                 return
               }
+              const { GoogleSignin, isErrorWithCode, statusCodes } = lib
+              try {
+                await GoogleSignin.hasPlayServices()
 
-              await loginSuccess(
-                bookcarsTypes.SocialSignInType.Google,
-                idToken,
-                user.email,
-                user.name || user.email,
-                user.photo || ''
-              )
-            } catch (err: any) {
-              let error = false
-              if (isErrorWithCode(err)) {
-                switch (err.code) {
-                  case statusCodes.SIGN_IN_CANCELLED:
-                    // user cancelled the login flow
-                    console.log('Google login cancelled')
-                    break
-                  case statusCodes.IN_PROGRESS:
-                    // operation (eg. login) already in progress
-                    console.log('Google login in progress')
-                    error = true
-                    break
-                  case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-                    console.error('Google play services not available')
-                    error = true
-                    break
-                  default:
-                    console.error('Google login error:', err.message)
-                    error = true
-                    break
+                // Force account picker
+                await GoogleSignin.signOut()
+
+                const userInfo = await GoogleSignin.signIn()
+
+                const user = userInfo.data?.user
+                const idToken = userInfo.data?.idToken
+
+                if (!user || !idToken) {
+                  // user probably cancelled the login flow
+                  console.log('Google login aborted before token received')
+                  return
                 }
-              } else {
-                // an error that's not related to google login occurred
-                console.error('Google login error:', err)
-                error = true
-              }
 
-              if (error) {
-                longinError()
+                await loginSuccess(
+                  bookcarsTypes.SocialSignInType.Google,
+                  idToken,
+                  user.email,
+                  user.name || user.email,
+                  user.photo || ''
+                )
+              } catch (err: any) {
+                let error = false
+                if (isErrorWithCode(err)) {
+                  switch (err.code) {
+                    case statusCodes.SIGN_IN_CANCELLED:
+                      // user cancelled the login flow
+                      console.log('Google login cancelled')
+                      break
+                    case statusCodes.IN_PROGRESS:
+                      // operation (eg. login) already in progress
+                      console.log('Google login in progress')
+                      error = true
+                      break
+                    case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+                      console.error('Google play services not available')
+                      error = true
+                      break
+                    default:
+                      console.error('Google login error:', err.message)
+                      error = true
+                      break
+                  }
+                } else {
+                  // an error that's not related to google login occurred
+                  console.error('Google login error:', err)
+                  error = true
+                }
+
+                if (error) {
+                  longinError()
+                }
               }
-            }
-          }}>
-          <Image source={require('@/assets/google-icon.png')} style={styles.google} />
-        </Pressable>
+            }}>
+            <Image source={require('@/assets/google-icon.png')} style={styles.google} />
+          </Pressable>
+        )}
 
         {/* APPLE */}
-        {helper.ios() && (
+        {showApple && (
           <Pressable
             onPress={async () => {
               let error = false
 
               try {
-                const credential = await AppleAuthentication.signInAsync({
+                const credential = await appleSignInAsync({
                   requestedScopes: [
-                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                    AppleAuthenticationScope.FULL_NAME,
+                    AppleAuthenticationScope.EMAIL,
                   ],
                 })
 
@@ -229,10 +286,16 @@ const SocialLogin = (
           </Pressable>
         )}
 
-        {/* FACEBOOK */}
-        <Pressable
+        {/* FACEBOOK — native module missing in Expo Go */}
+        {showFacebook && (
+          <Pressable
           // style={{ display: 'none' }}
           onPress={async () => {
+            const fb = loadFacebookSdk()
+            if (!fb) {
+              return
+            }
+            const { AccessToken, GraphRequest, GraphRequestManager, LoginManager, Profile } = fb
             LoginManager.logInWithPermissions(['public_profile', 'email'])
               .then(
                 async (result: any) => {
@@ -303,6 +366,7 @@ const SocialLogin = (
           }}>
           <Image source={require('@/assets/facebook-blue-icon.png')} style={styles.facebook} />
         </Pressable>
+        )}
 
         <Portal>
           <Dialog style={styles.dialog} visible={openErrorDialog} dismissable={false}>

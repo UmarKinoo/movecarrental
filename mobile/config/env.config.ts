@@ -1,3 +1,4 @@
+import { NativeModules, Platform } from 'react-native'
 import {
   BC_API_HOST,
   BC_DEFAULT_LANGUAGE,
@@ -23,6 +24,51 @@ import {
   BC_WEBSITE_NAME,
   BC_GOOGLE_WEB_CLIENT_ID,
 } from '@env'
+
+/**
+ * Expo Go / dev client loads the bundle from the dev machine. On a physical phone,
+ * `127.0.0.1` in .env points at the phone itself, not your Mac — API calls then fail
+ * with "hostname could not be found". Use the same LAN host Metro uses for the bundle.
+ */
+function devPackagerLanHostname(): string | null {
+  if (!__DEV__ || Platform.OS === 'web') {
+    return null
+  }
+  const scriptURL = NativeModules?.SourceCode?.scriptURL as string | undefined
+  if (!scriptURL || scriptURL.startsWith('file:')) {
+    return null
+  }
+  try {
+    const normalized = scriptURL.startsWith('http')
+      ? scriptURL
+      : `http://${scriptURL.replace(/^\/\//, '')}`
+    const { hostname } = new URL(normalized)
+    if (!hostname || hostname === 'localhost' || hostname === '127.0.0.1') {
+      return null
+    }
+    return hostname
+  } catch {
+    return null
+  }
+}
+
+function rewriteLocalhostForDevice(urlString: string, lanHost: string | null): string {
+  if (!lanHost) {
+    return urlString
+  }
+  try {
+    const u = new URL(urlString)
+    if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') {
+      u.hostname = lanHost
+      return u.toString().replace(/\/$/, '')
+    }
+  } catch {
+    // leave unchanged
+  }
+  return urlString
+}
+
+const _devLanHost = devPackagerLanHostname()
 
 /**
  * ISO 639-1 languages and their labels.
@@ -84,14 +130,14 @@ export const APP_TYPE: string = 'frontend'
  *
  * @type {string}
  */
-export const WEBSITE_NAME: string = String(BC_WEBSITE_NAME || 'BookCars')
+export const WEBSITE_NAME: string = String(BC_WEBSITE_NAME || 'MOVE')
 
 /**
  * API host.
  *
  * @type {string}
  */
-export const API_HOST: string = BC_API_HOST
+export const API_HOST: string = rewriteLocalhostForDevice(BC_API_HOST, _devLanHost)
 
 /**
  * Axios timeout in milliseconds.
@@ -147,28 +193,28 @@ export const BOOKINGS_PAGE_SIZE: number = Number.parseInt(BC_BOOKINGS_PAGE_SIZE,
  *
  * @type {string}
  */
-export const CDN_USERS: string = BC_CDN_USERS
+export const CDN_USERS: string = rewriteLocalhostForDevice(BC_CDN_USERS, _devLanHost)
 
 /**
  * Car images CDN.
  *
  * @type {string}
  */
-export const CDN_CARS: string = BC_CDN_CARS
+export const CDN_CARS: string = rewriteLocalhostForDevice(BC_CDN_CARS, _devLanHost)
 
 /**
  * Driver licenses CDN.
  *
  * @type {string}
  */
-export const CDN_LICENSES: string = BC_CDN_LICENSES
+export const CDN_LICENSES: string = rewriteLocalhostForDevice(BC_CDN_LICENSES, _devLanHost)
 
 /**
  * Temp driver licenses CDN.
  *
  * @type {string}
  */
-export const CDN_TEMP_LICENSES: string = BC_CDN_TEMP_LICENSES
+export const CDN_TEMP_LICENSES: string = rewriteLocalhostForDevice(BC_CDN_TEMP_LICENSES, _devLanHost)
 
 /**
  * Page offset.

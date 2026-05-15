@@ -126,8 +126,17 @@ const _signup = async (req: Request, res: Response, userType: bookcarsTypes.User
   }
 
   //
-  // Send confirmation email
+  // Send confirmation email (or auto-verify when SMTP is disabled)
   //
+  if (env.SMTP_DISABLED) {
+    user.verified = true
+    user.verifiedAt = new Date()
+    await user.save()
+    logger.info(`[user.signup] SMTP disabled — account auto-verified: ${user.email}`)
+    res.sendStatus(200)
+    return
+  }
+
   try {
     // generate token and save
     const token = new Token({ user: user._id, token: helper.generateToken() })

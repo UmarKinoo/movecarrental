@@ -6,6 +6,8 @@ import { CommonActions, NavigationRoute, RouteProp } from '@react-navigation/nat
 import * as bookcarsTypes from ':bookcars-types'
 import * as bookcarsHelper from ':bookcars-helper'
 
+import { colors } from '@/theme/colors'
+
 import * as helper from '@/utils/helper'
 import * as env from '@/config/env.config'
 import i18n from '@/lang/i18n'
@@ -238,7 +240,7 @@ const CarList = ({
             <View style={styles.container}>
               {
                 footerComponent || (loading
-                  ? <ActivityIndicator size="large" color="#f37022" style={styles.indicator} />
+                  ? <ActivityIndicator size="large" color={colors.lime} style={styles.indicator} />
                   : null)
               }
             </View>

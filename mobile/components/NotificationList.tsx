@@ -13,6 +13,7 @@ import * as UserService from '@/services/UserService'
 import * as NotificationService from '@/services/NotificationService'
 import * as env from '@/config/env.config'
 import * as helper from '@/utils/helper'
+import { colors } from '@/theme/colors'
 import Checkbox from '@/components/Checkbox'
 import { useGlobalContext, GlobalContextType } from '@/context/GlobalContext'
 
@@ -186,7 +187,7 @@ const NotificationList = ({ user, locale }: NotificationListProps) => {
             contentContainerStyle={styles.list}
             keyboardShouldPersistTaps={helper.android() ? 'handled' : 'always'}
           >
-            {loading && <ActivityIndicator size="large" color="#f37022" />}
+            {loading && <ActivityIndicator size="large" color={colors.lime} />}
             {rows.map((row) => (
               <View key={row._id} style={styles.notificationContainer}>
                 <View style={styles.notificationCheckbox}>

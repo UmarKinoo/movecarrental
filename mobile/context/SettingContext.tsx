@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import * as bookcarsTypes from ':bookcars-types'
+
+import { colors } from '@/theme/colors'
 import * as SettingService from '@/services/SettingService'
 import * as helper from '@/utils/helper'
 import { ActivityIndicator, Text, View } from 'react-native'
@@ -37,7 +39,7 @@ export const SettingProvider = ({ children }: { children: React.ReactNode }) => 
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#f37022" />
+        <ActivityIndicator size="large" color={colors.lime} />
       </View>
     )
   }

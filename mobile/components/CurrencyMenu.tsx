@@ -4,6 +4,7 @@ import { useLocalSearchParams, usePathname } from 'expo-router' // Replacement f
 import * as StripeService from '@/services/StripeService'
 import { CURRENCIES } from '@/config/env.config'
 import * as helper from '@/utils/helper'
+import { colors } from '@/theme/colors'
 
 interface CurrencyMenuProps {
   textColor?: string
@@ -62,10 +63,10 @@ const CurrencyMenu = ({
       textAlign: 'center',
     },
     selected: {
-      backgroundColor: '#feeee4',
+      backgroundColor: colors.limeTint,
     },
     textSelected: {
-      color: '#f37022',
+      color: colors.ink,
     }
   })
 

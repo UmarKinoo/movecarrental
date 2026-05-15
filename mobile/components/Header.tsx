@@ -10,11 +10,15 @@ import * as env from '@/config/env.config'
 import { useGlobalContext, GlobalContextType } from '@/context/GlobalContext'
 import * as NotificationService from '@/services/NotificationService'
 import CurrencyMenu from '@/components/CurrencyMenu'
+import { MoveLogo } from '@/components/brand/MoveLogo'
 import { useDrawer } from '@/context/DrawerContext'
+import { colors } from '@/theme/colors'
+import { fonts } from '@/theme/fonts'
 
 interface HeaderProps {
   title?: string
   hideTitle?: boolean
+  brandLogo?: boolean
   loggedIn?: boolean
   reload?: boolean
   _avatar?: string | null
@@ -23,6 +27,7 @@ interface HeaderProps {
 const Header = ({
   title,
   hideTitle,
+  brandLogo,
   loggedIn,
   reload,
   _avatar
@@ -64,23 +69,29 @@ const Header = ({
   }, [_avatar])
 
   return (
-    <View style={styles.container}>
-      {/* Toggle Drawer */}
-      <Pressable 
-        hitSlop={15} 
-        style={styles.menu} 
-        onPress={toggle}
-      >
-        <MaterialIcons name="menu" size={24} color="#fff" />
-      </Pressable>
-
-      {!hideTitle && (
-        <View>
-          <Text style={styles.text}>{title}</Text>
+    <View>
+      <View style={styles.accentBar} />
+      <View style={styles.container}>
+        <View style={styles.side}>
+          <Pressable hitSlop={15} style={styles.menu} onPress={toggle}>
+            <MaterialIcons name="menu" size={22} color="#fff" />
+          </Pressable>
         </View>
-      )}
 
-      <View style={styles.actions}>
+        {brandLogo && (
+          <View style={styles.brandCenter} pointerEvents="none">
+            <MoveLogo width={76} />
+          </View>
+        )}
+
+        {!brandLogo && !hideTitle && title ? (
+          <View style={styles.titleCenter}>
+            <Text style={styles.text} numberOfLines={1}>{title}</Text>
+          </View>
+        ) : null}
+
+        <View style={[styles.side, styles.sideRight]}>
+          <View style={styles.actions}>
         {/* Pass params to CurrencyMenu instead of the old route object */}
         <CurrencyMenu
           textColor="#fff"
@@ -95,39 +106,68 @@ const Header = ({
                   {notificationCount}
                 </Badge>
               )}
-              <MaterialIcons name="notifications" size={24} color="#fff" style={styles.badgeIcon} />
+              <MaterialIcons name="notifications" size={22} color="#fff" style={styles.badgeIcon} />
             </Pressable>
             
             <Pressable style={styles.avatar} onPress={() => router.push('/settings')}>
               {avatar 
-                ? <Avatar.Image size={24} source={{ uri: avatar }} /> 
-                : <MaterialIcons name="account-circle" size={24} color="#fff" />
+                ? <Avatar.Image size={22} source={{ uri: avatar }} /> 
+                : <MaterialIcons name="account-circle" size={22} color="#fff" />
               }
             </Pressable>
           </>
         )}
+          </View>
+        </View>
       </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  accentBar: {
+    height: 2,
+    backgroundColor: colors.lime,
+  },
   container: {
-    backgroundColor: '#f37022',
+    backgroundColor: colors.ink,
     zIndex: 40,
     elevation: 40,
-    height: 52,
+    height: 48,
     flexDirection: 'row',
-    paddingHorizontal: 15,
+    paddingHorizontal: 8,
     alignItems: 'center',
-    justifyContent: 'space-between',
+  },
+  side: {
+    minWidth: 88,
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  sideRight: {
+    justifyContent: 'flex-end',
+    marginLeft: 'auto',
+  },
+  brandCenter: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  titleCenter: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 8,
   },
   text: {
-    color: '#fff',
-    fontWeight: '600',
+    color: colors.paper,
+    fontFamily: fonts.displayMedium,
+    fontSize: 14,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   menu: {
-    padding: 5,
+    padding: 8,
   },
   actions: {
     flexDirection: 'row',
@@ -146,8 +186,8 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   badge: {
-    backgroundColor: '#1976d2',
-    color: '#ffffff',
+    backgroundColor: colors.lime,
+    color: colors.ink,
     position: 'absolute',
     top: -2,
     right: 2,

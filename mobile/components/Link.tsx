@@ -1,6 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, Pressable } from 'react-native'
 
+import { colors } from '@/theme/colors'
+
 interface LinkProps {
   style?: object
   textStyle?: object
@@ -29,7 +31,7 @@ const Link = ({
 
 const styles = StyleSheet.create({
   text: {
-    color: '#1976d2',
+    color: colors.ink,
     textDecorationLine: 'underline',
   },
 })

@@ -4,6 +4,10 @@ import { Stack, useRouter } from 'expo-router'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Provider as PaperProvider } from 'react-native-paper'
+
+import { useBrandFonts } from '@/hooks/useBrandFonts'
+import { movePaperTheme } from '@/theme/paper'
+import { colors } from '@/theme/colors'
 import { StripeProvider } from '@stripe/stripe-react-native'
 import * as SplashScreen from 'expo-splash-screen'
 import * as Notifications from 'expo-notifications'
@@ -36,6 +40,7 @@ SplashScreen.preventAutoHideAsync()
 const RootLayout = () => {
   const router = useRouter()
   const [appIsReady, setAppIsReady] = useState(false)
+  const { loaded: fontsLoaded } = useBrandFonts()
 
   const responseListener = useRef<Notifications.EventSubscription | null>(null)
 
@@ -102,20 +107,20 @@ const RootLayout = () => {
     }
   }, [appIsReady])
 
-  if (!appIsReady) {
+  if (!appIsReady || !fontsLoaded) {
     return null
   }
 
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-      <ExpoStatusBar style="dark" backgroundColor="#ffffff" translucent={false} />
+      <ExpoStatusBar style="light" backgroundColor={colors.ink} translucent={false} />
 
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SettingProvider>
           <GlobalProvider>
             <AuthProvider>
               <SafeAreaProvider>
-                <PaperProvider>
+                <PaperProvider theme={movePaperTheme}>
                   <StripeProvider
                     publishableKey={env.STRIPE_PUBLISHABLE_KEY}
                     merchantIdentifier={env.STRIPE_MERCHANT_IDENTIFIER}

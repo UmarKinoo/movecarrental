@@ -236,6 +236,14 @@ export const SMTP_PASS = __env__('BC_SMTP_PASS', true)
 export const SMTP_FROM = __env__('BC_SMTP_FROM', true)
 
 /**
+ * Skip SMTP (no send, no connection). Sign-up auto-verifies accounts in dev.
+ * Set BC_SMTP_DISABLED=true locally when Mailpit/real SMTP is not running.
+ *
+ * @type {boolean}
+ */
+export const SMTP_DISABLED = helper.StringToBoolean(__env__('BC_SMTP_DISABLED', false, 'false'))
+
+/**
  * CDN root folder path.
  *
  * @type {string}

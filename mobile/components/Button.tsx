@@ -1,6 +1,9 @@
 import React from 'react'
 import { StyleSheet, Text, Pressable } from 'react-native'
 
+import { colors } from '@/theme/colors'
+import { fonts } from '@/theme/fonts'
+
 interface ButtonProps {
   size?: 'small'
   color?: string
@@ -27,17 +30,18 @@ const Button = ({
   const styles = StyleSheet.create({
     button: {
       height: small ? 37 : 55,
-      borderRadius: 10,
-      backgroundColor: color === 'secondary' ? '#999' : '#f37022',
+      borderRadius: 4,
+      backgroundColor: color === 'secondary' ? colors.secondary : colors.lime,
       alignItems: 'center',
       justifyContent: 'center',
       maxWidth: 480,
     },
     text: {
-      color: '#fff',
+      color: color === 'secondary' ? colors.paper : colors.ink,
       textTransform: 'uppercase',
       fontSize: small ? 14 : 17,
-      fontWeight: '600',
+      fontFamily: fonts.displayMedium,
+      letterSpacing: 0.5,
     },
   })
 

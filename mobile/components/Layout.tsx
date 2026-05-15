@@ -17,6 +17,7 @@ interface LayoutProps {
   style?: object
   title?: string
   hideTitle?: boolean
+  brandLogo?: boolean
   avatar?: string | null
   children: React.ReactNode
   onLoad: (user?: bookcarsTypes.User) => void
@@ -28,6 +29,7 @@ const Layout = ({
   style,
   title,
   hideTitle,
+  brandLogo,
   avatar,
   children,
   onLoad
@@ -139,6 +141,7 @@ const Layout = ({
       <Header
         title={title}
         hideTitle={hideTitle}
+        brandLogo={brandLogo}
         loggedIn={loggedIn}
         _avatar={avatar}
         reload={reload}

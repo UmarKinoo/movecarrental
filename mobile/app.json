@@ -1,23 +1,25 @@
 {
   "expo": {
-    "name": "BookCars",
+    "name": "Keeps you moving",
     "version": "8.8.0",
-    "scheme": "bookcars",
-    "slug": "bookcars",
-    "icon": "./assets/icon.png",
+    "scheme": "move",
+    "slug": "move-car-rental",
+    "icon": "./assets/app-icon.png",
     "assetBundlePatterns": [
       "**/*"
     ],
     "splash": {
-      "backgroundColor": "#f37022",
-      "image": "./assets/splash.png"
+      "backgroundColor": "#0E1A14",
+      "image": "./assets/app-splash.png",
+      "resizeMode": "contain"
     },
     "android": {
       "versionCode": 880,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png"
+        "foregroundImage": "./assets/app-icon.png",
+        "backgroundColor": "#0E1A14"
       },
-      "icon": "./assets/icon.png",
+      "icon": "./assets/app-icon.png",
       "googleServicesFile": "./google-services.json",
       "softwareKeyboardLayoutMode": "pan",
       "package": "com.bookcars",
@@ -26,7 +28,7 @@
     "ios": {
       "buildNumber": "8.8.0",
       "supportsTablet": true,
-      "icon": "./assets/icon.png",
+      "icon": "./assets/app-icon.png",
       "bundleIdentifier": "com.bookcars",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
@@ -36,9 +38,10 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#f37022",
-          "image": "./assets/icon.png",
-          "imageWidth": 200
+          "backgroundColor": "#0E1A14",
+          "image": "./assets/app-splash.png",
+          "imageWidth": 280,
+          "resizeMode": "contain"
         }
       ],
       [
@@ -61,7 +64,7 @@
         {
           "appID": "FACEBOOK_APP_ID",
           "clientToken": "FACEBOOK_CLIENT_TOKEN",
-          "displayName": "BookCars",
+          "displayName": "MOVE",
           "scheme": "FACEBOOK_SCHEME",
           "advertiserIDCollectionEnabled": false,
           "autoLogAppEventsEnabled": false,

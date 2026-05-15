@@ -2,6 +2,8 @@ import React from 'react'
 import { Pressable, StyleSheet } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 
+import { colors } from '@/theme/colors'
+
 interface CheckboxProps {
   indeterminate?: boolean
   checked?: boolean
@@ -25,7 +27,7 @@ const Checkbox = ({
       <MaterialIcons
         name={indeterminate ? 'indeterminate-check-box' : checked ? 'check-box' : 'check-box-outline-blank'}
         size={24}
-        color={indeterminate || checked ? '#1976d2' : '#606264'}
+        color={indeterminate || checked ? colors.lime : '#606264'}
       />
     </Pressable>
   )

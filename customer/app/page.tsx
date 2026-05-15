@@ -12,9 +12,10 @@ import {
 } from 'lucide-react'
 import { SearchPanel } from '@/components/forms/search-panel'
 import { MoveIcon } from '@/components/brand/move-mark'
+import { TransparentCarImage } from '@/components/cars/transparent-car-image'
+import { fleetCars } from '@/lib/cars/fleet-assets'
 
-const heroImage =
-  'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1800&q=85'
+const heroCar = fleetCars.allionHero
 
 const popularCars = [
   { name: 'Compact Auto', tag: 'CITY', icon: Zap },
@@ -39,10 +40,10 @@ export default function HomePage() {
       <section className="relative overflow-hidden bg-white">
         <div className="grid-lines pointer-events-none absolute inset-0 opacity-40" aria-hidden />
         <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-12 md:px-8 md:pb-24 md:pt-20">
-          <div className="grid items-end gap-10 lg:grid-cols-[1.15fr_1fr]">
+          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-10 xl:gap-14">
             <div>
               <p className="eyebrow-lime">Introducing — MOVE</p>
-              <h1 className="display mt-6 text-[16vw] text-ink md:text-[10rem] xl:text-[12rem]">
+              <h1 className="display mt-6 text-[12vw] text-ink md:text-[7rem] xl:text-[8.5rem]">
                 Drive
                 <br />
                 <span className="relative inline-block">
@@ -66,25 +67,37 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Hero image card */}
-            <div className="relative">
-              <div className="absolute -left-3 -top-3 z-0 h-full w-full bg-lime md:-left-5 md:-top-5" aria-hidden />
-              <div className="relative aspect-[4/5] overflow-hidden border border-ink bg-ink">
-                <img
-                  src={heroImage}
-                  alt="Car on a coastal road"
-                  className="h-full w-full object-cover opacity-95"
+            {/* Hero fleet cut-out */}
+            <div className="relative w-full lg:-mr-6 xl:-mr-10">
+              <div
+                className="pointer-events-none absolute bottom-[18%] left-0 z-0 h-[42%] w-[62%] bg-lime sm:bottom-[16%] sm:h-[44%] sm:w-[58%] lg:bottom-[14%] lg:left-2 lg:h-[48%] lg:w-[56%]"
+                aria-hidden
+              />
+              <div className="relative z-10 flex w-full flex-col justify-end">
+                <TransparentCarImage
+                  src={heroCar.src}
+                  alt={heroCar.alt}
+                  width={heroCar.width}
+                  height={heroCar.height}
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 720px"
+                  className="w-full"
+                  imageClassName="mx-auto w-full min-h-[220px] max-h-[min(44vh,380px)] object-contain object-bottom sm:min-h-[280px] sm:max-h-[min(50vh,460px)] md:max-h-[min(54vh,520px)] lg:min-h-[340px] lg:max-h-[min(62vh,640px)] xl:max-h-[680px] xl:min-h-[400px]"
                 />
-                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-gradient-to-t from-ink via-ink/70 to-transparent p-5 text-white">
+                <div className="mt-3 flex items-end justify-between gap-4 border-t border-ink/15 pt-3 sm:mt-4 sm:pt-4">
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-lime">
-                      Fleet · 2025
-                    </p>
-                    <p className="mt-1 font-display text-xl font-black uppercase tracking-tightest">
-                      Built for the road
-                    </p>
+                    {heroCar.tag ? (
+                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/50">
+                        {heroCar.tag}
+                      </p>
+                    ) : null}
+                    {heroCar.label ? (
+                      <p className="mt-1 font-display text-xl font-black uppercase tracking-tightest text-ink">
+                        {heroCar.label}
+                      </p>
+                    ) : null}
                   </div>
-                  <ArrowUpRight size={28} strokeWidth={2} className="text-lime" />
+                  <ArrowUpRight size={28} strokeWidth={2} className="shrink-0 text-ink" />
                 </div>
               </div>
             </div>

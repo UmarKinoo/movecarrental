@@ -10,6 +10,7 @@ import i18n from '@/lang/i18n'
 import * as helper from '@/utils/helper'
 import * as BookingService from '@/services/BookingService'
 import Booking from './Booking'
+import { colors } from '@/theme/colors'
 
 interface BookingListProps {
   suppliers?: string[]
@@ -180,7 +181,7 @@ const BookingList = ({
           <View style={styles.container}>
             {
               !openCancelDialog && loading
-                ? <ActivityIndicator size="large" color="#f37022" style={styles.indicator} />
+                ? <ActivityIndicator size="large" color={colors.lime} style={styles.indicator} />
                 : null
             }
           </View>
@@ -226,7 +227,7 @@ const BookingList = ({
           <Dialog.Title style={styles.dialogTitleContent}>{(!cancelRequestSent && !cancelRequestProcessing && i18n.t('CONFIRM_TITLE')) || ''}</Dialog.Title>
           <Dialog.Content style={styles.dialogContent}>
             {cancelRequestProcessing ? (
-              <ActivityIndicator size="large" color="#f37022" />
+              <ActivityIndicator size="large" color={colors.lime} />
             ) : cancelRequestSent ? (
               <RNPText variant="bodyMedium">{i18n.t('CANCEL_BOOKING_REQUEST_SENT')}</RNPText>
             ) : (

@@ -1,5 +1,6 @@
 import * as nodemailer from 'nodemailer'
 import * as env from '../config/env.config'
+import * as logger from './logger'
 
 /**
  * A cached promise of the Nodemailer Transporter to prevent 
@@ -77,6 +78,13 @@ const createTransporter = async (): Promise<nodemailer.Transporter> => {
  * @returns {Promise<nodemailer.SentMessageInfo>} Result containing messageId and accepted recipients.
  */
 export const sendMail = async (mailOptions: nodemailer.SendMailOptions): Promise<nodemailer.SentMessageInfo> => {
+  if (env.SMTP_DISABLED) {
+    logger.info(
+      `[mail] SMTP disabled — skipped email to ${String(mailOptions.to)} subject="${String(mailOptions.subject || '')}"`,
+    )
+    return { messageId: 'smtp-disabled', accepted: [mailOptions.to].flat().filter(Boolean) as string[] }
+  }
+
   const transporter = await createTransporter()
   return transporter.sendMail(mailOptions)
 }

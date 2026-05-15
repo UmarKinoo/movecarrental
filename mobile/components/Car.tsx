@@ -78,6 +78,13 @@ const Car = ({
     init()
   }, [car, from, language, to])
 
+  const carImageUri =
+    env.CDN_CARS && car.image ? bookcarsHelper.joinURL(env.CDN_CARS, car.image) : null
+  const supplierAvatarUri =
+    env.CDN_USERS && car.supplier?.avatar
+      ? bookcarsHelper.joinURL(env.CDN_USERS, car.supplier.avatar)
+      : null
+
   const styles = StyleSheet.create({
     carContainer: {
       marginRight: 7,
@@ -144,6 +151,11 @@ const Car = ({
       flex: 1,
       resizeMode: 'contain',
     },
+    imgPlaceholder: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#f5f5f5',
+    },
     infos: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -195,6 +207,12 @@ const Car = ({
       width: env.SUPPLIER_IMAGE_WIDTH,
       height: env.SUPPLIER_IMAGE_HEIGHT,
       resizeMode: 'contain',
+    },
+    supplierImgPlaceholder: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#f0f0f0',
+      borderRadius: 4,
     },
     supplierText: {
       color: '#a1a1a1',
@@ -297,7 +315,13 @@ const Car = ({
         <Text style={styles.name}>{car.name}</Text>
 
         <View style={styles.imgView}>
-          <Image style={styles.img} source={{ uri: bookcarsHelper.joinURL(env.CDN_CARS, car.image) }} />
+          {carImageUri ? (
+            <Image style={styles.img} source={{ uri: carImageUri }} />
+          ) : (
+            <View style={[styles.img, styles.imgPlaceholder]}>
+              <MaterialIcons name="directions-car" size={56} color="#bdbdbd" />
+            </View>
+          )}
         </View>
 
         <View style={styles.infos}>
@@ -390,12 +414,13 @@ const Car = ({
         <View style={styles.footer}>
           <View style={styles.detailsContainer}>
             <View style={styles.supplier}>
-              <Image
-                style={styles.supplierImg}
-                source={{
-                  uri: bookcarsHelper.joinURL(env.CDN_USERS, car.supplier.avatar),
-                }}
-              />
+              {supplierAvatarUri ? (
+                <Image style={styles.supplierImg} source={{ uri: supplierAvatarUri }} />
+              ) : (
+                <View style={[styles.supplierImg, styles.supplierImgPlaceholder]}>
+                  <MaterialIcons name="person" size={22} color="#bdbdbd" />
+                </View>
+              )}
               <Text style={styles.supplierText} numberOfLines={2} ellipsizeMode="tail">{car.supplier.fullName}</Text>
             </View>
             <View style={styles.details}>
