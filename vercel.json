@@ -1,0 +1,14 @@
+{
+  "experimentalServices": {
+    "customer": {
+      "entrypoint": "customer",
+      "routePrefix": "/",
+      "framework": "nextjs"
+    },
+    "admin": {
+      "entrypoint": "admin",
+      "routePrefix": "/admin",
+      "framework": "vite"
+    }
+  }
+}

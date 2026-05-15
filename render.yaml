@@ -1,0 +1,15 @@
+# BookCars API — deploy on Render (not Vercel). Customer + admin use vercel.json.
+services:
+  - type: web
+    name: move-api
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: .
+    plan: starter
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: BC_PORT
+        value: 4002
+      # Set the rest in the Render dashboard (secrets): BC_DB_URI, BC_JWT_SECRET,
+      # BC_COOKIE_SECRET, BC_ADMIN_HOST, BC_FRONTEND_HOST, BC_SMTP_*, CDN paths, etc.

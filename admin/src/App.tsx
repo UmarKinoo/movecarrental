@@ -72,6 +72,11 @@ const AppLayout = () => {
   )
 }
 
+const routerBasename = (() => {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+  return base === '' ? undefined : base
+})()
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -115,7 +120,7 @@ const router = createBrowserRouter([
       { path: '*', element: <NoMatch /> }
     ]
   }
-])
+], { basename: routerBasename })
 
 const App = () => <RouterProvider router={router} />
 

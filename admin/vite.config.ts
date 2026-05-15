@@ -8,7 +8,10 @@ import babelPlugin from '@rolldown/plugin-babel'
 export default ({ mode }: { mode: string }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd(), '') }
 
+  const base = process.env.VITE_BASE_PATH || '/'
+
   return defineConfig({
+    base,
     plugins: [
       react(),
       babelPlugin({
