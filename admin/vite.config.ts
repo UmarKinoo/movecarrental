@@ -60,7 +60,7 @@ export default ({ mode }: { mode: string }) => {
       },
     },
     build: {
-      outDir: 'build', // Output directory
+      outDir: 'dist',
       target: 'esnext', // Use esnext to ensure the best performance
       modulePreload: true, // Keep modulePreload enabled to ensure the best performance
       sourcemap: false, // Disable sourcemaps in production
