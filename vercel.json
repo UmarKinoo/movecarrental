@@ -8,8 +8,7 @@
     "admin": {
       "entrypoint": "admin",
       "routePrefix": "/admin",
-      "framework": "vite",
-      "outputDirectory": "dist"
+      "framework": "vite"
     }
   }
 }
