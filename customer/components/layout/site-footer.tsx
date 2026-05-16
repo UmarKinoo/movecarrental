@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowUpRight, Mail } from 'lucide-react'
-import { MoveIcon } from '@/components/brand/move-mark'
+import { MoveLogo } from '@/components/brand/move-logo'
 
 const cols = [
   {
@@ -45,11 +45,8 @@ export function SiteFooter() {
       <div className="relative mx-auto max-w-7xl px-4 pt-16 md:px-8">
         <div className="grid gap-12 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
-            <Link href="/" aria-label="MOVE — home" className="inline-flex items-center gap-3">
-              <MoveIcon className="h-8 w-auto text-lime" />
-              <span className="font-display text-2xl font-black uppercase tracking-tightest">
-                MOVE
-              </span>
+            <Link href="/" aria-label="MOVE — home" className="inline-block">
+              <MoveLogo width={80} />
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/70">
               Drive anywhere. A modern, mobile-first car rental for travellers,

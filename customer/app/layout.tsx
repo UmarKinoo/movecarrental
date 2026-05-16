@@ -22,6 +22,10 @@ export const metadata: Metadata = {
   title: 'MOVE — Drive Anywhere',
   description:
     'MOVE is a sporty, mobile-first car rental for anyone going somewhere. Book in seconds. Pick up the keys. Go.',
+  icons: {
+    icon: '/brand/move-icon.svg',
+    apple: '/brand/move-logo.png',
+  },
 }
 
 export const viewport: Viewport = {

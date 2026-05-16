@@ -1,4 +1,5 @@
 import type { SVGProps } from 'react'
+import { MoveLogo } from '@/components/brand/move-logo'
 
 /**
  * The MOVE icon (the stylized "in/m" mark from /public/brand/move-icon.svg).
@@ -23,25 +24,16 @@ export function MoveIcon({ className, ...props }: SVGProps<SVGSVGElement>) {
 }
 
 /**
- * Lockup: lime icon + MOVE wordmark in current text color.
- * Use inside any color: text-ink on light, text-white on dark.
+ * Full wordmark image lockup (same asset as mobile app).
  */
 export function MoveLockup({
-  size = 28,
+  size,
+  width,
   className = '',
 }: {
   size?: number
+  width?: number
   className?: string
 }) {
-  return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <MoveIcon style={{ height: size, width: 'auto' }} className="text-lime" />
-      <span
-        className="font-display font-black uppercase tracking-tightest"
-        style={{ fontSize: size * 0.92, lineHeight: 1 }}
-      >
-        MOVE
-      </span>
-    </span>
-  )
+  return <MoveLogo width={width ?? size ?? 80} className={className} />
 }

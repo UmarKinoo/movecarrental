@@ -26,7 +26,7 @@ export async function SiteHeader() {
           aria-label="MOVE — home"
           className="flex items-center transition hover:opacity-80"
         >
-          <MoveLockup size={28} className="text-white" />
+          <MoveLockup width={80} />
         </Link>
 
         <nav

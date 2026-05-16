@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { MoveIcon } from '@/components/brand/move-mark'
+import { MoveLogo } from '@/components/brand/move-logo'
 
 type AuthShellProps = {
   eyebrow: string
@@ -29,7 +29,7 @@ export function AuthShell({ eyebrow, title, subtitle, children, footer }: AuthSh
           Back to MOVE
         </Link>
         <div>
-          <MoveIcon className="h-20 w-auto text-lime" />
+          <MoveLogo width={128} priority />
           <h2 className="display mt-8 text-6xl text-white">
             Drive
             <br />

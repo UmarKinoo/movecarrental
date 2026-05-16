@@ -55,8 +55,8 @@ export function MobileNav({ session }: MobileNavProps) {
             {/* lime topline */}
             <div className="h-1 w-full bg-lime" aria-hidden />
 
-            <div className="flex items-center justify-between border-b border-ink/10 px-5 py-4">
-              <MoveLockup size={24} className="text-ink" />
+            <div className="flex items-center justify-between bg-ink px-5 py-4">
+              <MoveLockup width={72} />
               <button
                 type="button"
                 className="rounded-sm p-2 text-ink transition hover:bg-ink hover:text-lime"
